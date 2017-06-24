@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
     Button btnClick;
     Toolbar toolbar;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,9 +31,12 @@ public class MainActivity extends AppCompatActivity {
         btnClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "jaja", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "HI!", Toast.LENGTH_SHORT).show();
             }
         });
+
+
+
     }
 
     @Override
