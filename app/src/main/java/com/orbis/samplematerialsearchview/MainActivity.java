@@ -1,5 +1,6 @@
 package com.orbis.samplematerialsearchview;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +11,10 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.orbis.materialsearchview.MaterialSearchView;
+import com.orbis.materialsearchview.SearchEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,7 +22,9 @@ public class MainActivity extends AppCompatActivity {
     Button btnClick;
     Toolbar toolbar;
 
+    private List<SearchEntity> searchEntityList = new ArrayList<>();
 
+    private boolean hola = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +42,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
+        materialSearchView.initFirstSetup(searchEntityList);
     }
 
     @Override
@@ -55,10 +61,31 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
+            searchEntityList.add(new SearchEntity("CarlitosDroid"));
+            searchEntityList.add(new SearchEntity("Jan"));
+            searchEntityList.add(new SearchEntity("Ricardo"));
+            searchEntityList.add(new SearchEntity("Andres"));
+            searchEntityList.add(new SearchEntity("Gerardo"));
+            searchEntityList.add(new SearchEntity("Carlo"));
             materialSearchView.setVisibleWithAnimation();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (materialSearchView.getCurrentVisibility() == View.VISIBLE) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                materialSearchView.circleReveal(1, false, false);
+            } else {
+                //setOnlyToolbarVisible();
+            }
+        } else {
+            super.onBackPressed();
+        }
+
     }
 }

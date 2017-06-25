@@ -1,22 +1,26 @@
 package com.orbis.materialsearchview;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
 
 /**
- * Created by carlos on 6/24/17.
+ * Created by Carlos Vargas on 6/24/17.
+ *
  */
 
-public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ItemViewHolder>{
+class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ItemViewHolder> {
 
-    List<SearchEntity> adjectiveEntities;
-    public SearchAdapter(List<SearchEntity> adjectiveEntities){
-        this.adjectiveEntities = adjectiveEntities;
+    private List<SearchEntity> searchEntities;
+
+    SearchAdapter(List<SearchEntity> adjectiveEntities) {
+        this.searchEntities = adjectiveEntities;
     }
 
     @Override
@@ -27,19 +31,27 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ItemViewHo
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-
+        holder.lblMessage.setText(searchEntities.get(position).getMessage());
     }
 
     @Override
     public int getItemCount() {
-        return adjectiveEntities.size();
+        return searchEntities.size();
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder{
+    class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        private LinearLayout llGeneral;
         private TextView lblMessage;
-        public ItemViewHolder(View itemView) {
+
+        ItemViewHolder(View itemView) {
             super(itemView);
+            llGeneral = (LinearLayout) itemView.findViewById(R.id.llGeneral);
             lblMessage = (TextView) itemView.findViewById(R.id.lblMessage);
+            llGeneral.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
         }
     }
 }

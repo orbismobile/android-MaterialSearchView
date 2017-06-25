@@ -1,7 +1,7 @@
 package com.orbis.materialsearchview;
 
 /**
- * Created by carlos on 6/24/17.
+ * Created by Carlos Vargas on 6/24/17.
  */
 
 public class SearchEntity {
