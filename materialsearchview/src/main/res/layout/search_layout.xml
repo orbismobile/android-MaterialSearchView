@@ -4,70 +4,82 @@
     android:id="@+id/flGeneral"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
-    android:orientation="vertical"
-    android:padding="5dp">
+    android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/cvSearch"
+    <View
+        android:id="@+id/vShadow"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/md_white_1000"
-        app:cardCornerRadius="2dp"
-        app:cardElevation="2dp">
+        android:layout_height="match_parent"
+        android:background="@color/md_black_1000_50"
+        android:visibility="invisible"/>
 
-        <LinearLayout
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="5dp">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cvSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            app:cardBackgroundColor="@color/md_white_1000"
+            app:cardCornerRadius="2dp"
+            app:cardElevation="2dp">
 
             <LinearLayout
-                android:id="@+id/lnlSearch"
-                android:layout_width="match_parent"
-                android:layout_height="43dp"
-                android:background="@android:color/white"
-                android:orientation="horizontal">
-
-                <ImageButton
-                    android:id="@+id/btnBack"
-                    android:layout_width="48dp"
-                    android:layout_height="match_parent"
-                    android:background="?attr/selectableItemBackground"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_arrow_back_grey_700_24dp" />
-
-                <EditText
-                    android:id="@+id/txtSearch"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:hint="@string/default_search_message"
-                    android:textSize="16sp" />
-
-                <ImageButton
-                    android:id="@+id/btnClear"
-                    android:layout_width="48dp"
-                    android:layout_height="match_parent"
-                    android:background="?attr/selectableItemBackground"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_close_grey_700_24dp"
-                    android:visibility="visible" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/md_grey_300" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rcvSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/md_white_1000"/>
+                android:orientation="vertical">
 
-        </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/lnlSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:background="@android:color/white"
+                    android:orientation="horizontal">
 
-    </android.support.v7.widget.CardView>
+                    <ImageButton
+                        android:id="@+id/btnBack"
+                        android:layout_width="48dp"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_arrow_back_grey_700_24dp" />
+
+                    <EditText
+                        android:id="@+id/txtSearch"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="@string/default_search_message"
+                        android:textSize="16sp" />
+
+                    <ImageButton
+                        android:id="@+id/btnClear"
+                        android:layout_width="48dp"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_close_grey_700_24dp"
+                        android:visibility="visible" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/md_grey_300" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rcvSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/md_white_1000" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </FrameLayout>
 
 </FrameLayout>
