@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.orbis.materialsearchview.MaterialSearchView;
+import com.orbis.materialsearchview.SearchAdapter;
 import com.orbis.materialsearchview.SearchEntity;
 
 import java.util.ArrayList;
@@ -21,8 +22,9 @@ public class MainActivity extends AppCompatActivity {
     MaterialSearchView materialSearchView;
     Button btnClick;
     Toolbar toolbar;
+    NewSearchAdapter newSearchAdapter;
 
-    private List<SearchEntity> searchEntityList = new ArrayList<>();
+    private List<Object> objectList = new ArrayList<>();
 
     private boolean hola = true;
 
@@ -42,7 +44,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        materialSearchView.initFirstSetup(searchEntityList);
+        newSearchAdapter = new NewSearchAdapter();
+
+        materialSearchView.initFirstSetup(objectList, newSearchAdapter);
     }
 
     @Override
@@ -61,12 +65,13 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
-            searchEntityList.add(new SearchEntity("CarlitosDroid"));
-            searchEntityList.add(new SearchEntity("Jan"));
-            searchEntityList.add(new SearchEntity("Ricardo"));
-            searchEntityList.add(new SearchEntity("Andres"));
-            searchEntityList.add(new SearchEntity("Gerardo"));
-            searchEntityList.add(new SearchEntity("Carlo"));
+
+            objectList.add(new AlarmEntity("CarlitosDroid"));
+            objectList.add(new AlarmEntity("Jan"));
+            objectList.add(new AlarmEntity("Ricardo"));
+            objectList.add(new ProfileEntity("Andres"));
+            objectList.add(new ProfileEntity("Gerardo"));
+            objectList.add(new ProfileEntity("Carlo"));
             materialSearchView.setVisibleWithAnimation();
             return true;
         }

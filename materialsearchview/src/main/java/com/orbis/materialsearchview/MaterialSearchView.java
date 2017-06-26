@@ -36,7 +36,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
     private View vShadow;
 
     private RecyclerView rcvSearch;
-    private List<SearchEntity> searchEntities = new ArrayList<>();
+    private List<Object> objectList = new ArrayList<>();
     private SearchAdapter searchAdapter;
 
     //Animator for reveal animation
@@ -91,16 +91,13 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         a.recycle();
     }
 
-    private void setUpRecyclerViewAdapter() {
+    public void initFirstSetup(List<Object> objects, SearchAdapter searchAdapter) {
+        this.objectList = objects;
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rcvSearch.setLayoutManager(linearLayoutManager);
-        searchAdapter = new SearchAdapter(searchEntities);
-        rcvSearch.setAdapter(searchAdapter);
-    }
-
-    public void initFirstSetup(List<SearchEntity> objects) {
-        this.searchEntities = objects;
-        setUpRecyclerViewAdapter();
+        this.searchAdapter = searchAdapter;
+        //this.searchAdapter.addDataList(objectList);
+        rcvSearch.setAdapter(this.searchAdapter);
     }
 
     public void setVisibleWithAnimation() {
@@ -139,7 +136,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         if (shouldShowSecondToolbar) {
             setVisibility(View.VISIBLE);
         } else {
-            searchEntities.clear();
+            objectList.clear();
             searchAdapter.notifyDataSetChanged();
         }
 
