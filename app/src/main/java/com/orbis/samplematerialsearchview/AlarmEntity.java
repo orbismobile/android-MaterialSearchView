@@ -1,13 +1,14 @@
-package com.orbis.materialsearchview;
+package com.orbis.samplematerialsearchview;
 
 /**
  * Created by Carlos Vargas on 6/24/17.
  */
 
-public class SearchEntity {
+public class AlarmEntity {
+
     private String message;
 
-    public SearchEntity(String message) {
+    public AlarmEntity(String message) {
         this.message = message;
     }
 

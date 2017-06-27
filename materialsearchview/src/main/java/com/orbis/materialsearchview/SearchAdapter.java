@@ -1,57 +1,42 @@
 package com.orbis.materialsearchview;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import java.util.List;
 
 /**
  * Created by Carlos Vargas on 6/24/17.
  *
  */
 
-class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ItemViewHolder> {
+public abstract class SearchAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<SearchEntity> searchEntities;
-
-    SearchAdapter(List<SearchEntity> adjectiveEntities) {
-        this.searchEntities = adjectiveEntities;
+    @Override
+    public int getItemViewType(int position) {
+        return getViewType(position);
     }
 
     @Override
-    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search, parent, false);
-        return new ItemViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return onCreateView(parent, viewType);
     }
 
     @Override
-    public void onBindViewHolder(ItemViewHolder holder, int position) {
-        holder.lblMessage.setText(searchEntities.get(position).getMessage());
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        onBindView(holder, position);
     }
 
     @Override
     public int getItemCount() {
-        return searchEntities.size();
+        return getCount();
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        private LinearLayout llGeneral;
-        private TextView lblMessage;
+    //public abstract String onCreateViewHolder();
+    public abstract VH onCreateView(ViewGroup parent, int viewType);
 
-        ItemViewHolder(View itemView) {
-            super(itemView);
-            llGeneral = (LinearLayout) itemView.findViewById(R.id.llGeneral);
-            lblMessage = (TextView) itemView.findViewById(R.id.lblMessage);
-            llGeneral.setOnClickListener(this);
-        }
+    public abstract void onBindView(RecyclerView.ViewHolder holder, int position);
 
-        @Override
-        public void onClick(View v) {
-        }
-    }
+    public abstract int getViewType(int position);
+
+    public abstract int getCount();
+
 }
