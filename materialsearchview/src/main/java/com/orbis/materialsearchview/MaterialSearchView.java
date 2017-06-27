@@ -43,7 +43,9 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
     private Animator anim;
 
     //Animation for vShadow
-    private Animation animationFadeIn;
+    private Animation animationFadeInShadow;
+
+    private Animation animationFadeInView;
 
 
     public MaterialSearchView(Context context) {
@@ -81,7 +83,9 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         btnClear.setOnClickListener(this);
 
         //SetUp Animation for vShadow
-        animationFadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
+        animationFadeInShadow = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in_shadow);
+
+        animationFadeInView = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in_view);
     }
 
     private void initStyle(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -101,12 +105,11 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
     }
 
     public void setVisibleWithAnimation() {
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             circleReveal(1, false, true);
         } else {
-            // TODO da sistemare
-//            AnimationUtil.fadeInView(this, 3000, animationListener);
+            // TODO all systems
+            fadeInMaterialSearchView(true);
         }
     }
 
@@ -118,7 +121,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 circleReveal(1, false, false);
             } else {
-
+                fadeInMaterialSearchView(false);
             }
         }
     }
@@ -170,7 +173,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (shouldShowSecondToolbar) {
-                    vShadow.setAnimation(animationFadeIn);
+                    vShadow.setAnimation(animationFadeInShadow);
                     vShadow.setVisibility(VISIBLE);
                     searchAdapter.notifyDataSetChanged();
                 } else {
@@ -179,5 +182,49 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
             }
         });
         anim.start();
+    }
+
+
+    public void fadeInMaterialSearchView(final boolean shouldShowSecondToolbar) {
+
+        // make the view visible and start the animation
+        if (shouldShowSecondToolbar) {
+            setVisibility(View.VISIBLE);
+        } else {
+            objectList.clear();
+            searchAdapter.notifyDataSetChanged();
+        }
+
+
+        if (shouldShowSecondToolbar)
+            this.setAnimation(animationFadeInView);
+        else
+            setVisibility(INVISIBLE);
+
+        animationFadeInView.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                Toast.makeText(getContext(), "notify " + shouldShowSecondToolbar, Toast.LENGTH_SHORT).show();
+                if (shouldShowSecondToolbar) {
+
+                    vShadow.setAnimation(animationFadeInShadow);
+                    vShadow.setVisibility(VISIBLE);
+                    searchAdapter.notifyDataSetChanged();
+                } else {
+                    setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        animationFadeInView.start();
     }
 }
