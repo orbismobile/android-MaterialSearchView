@@ -16,14 +16,14 @@ import java.util.List;
  *
  */
 
-class NewSearchAdapter extends SearchAdapter<RecyclerView.ViewHolder> {
+class CustomAdapter extends SearchAdapter<RecyclerView.ViewHolder> {
 
     private static final int TYPE_ALARM = 0;
     private static final int TYPE_PROFILE = 1;
 
     private List<Object> objectList;
 
-    NewSearchAdapter() {
+    CustomAdapter() {
     }
 
     void addDataList(List<Object> objectList) {
@@ -43,10 +43,10 @@ class NewSearchAdapter extends SearchAdapter<RecyclerView.ViewHolder> {
     public RecyclerView.ViewHolder onCreateView(ViewGroup parent, int viewType) {
         View view;
         if (viewType == TYPE_ALARM) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search_1, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_alarm, parent, false);
             return new AlarmViewHolder(view);
         } else {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search_2, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_profile, parent, false);
             return new ProfileViewHolder(view);
         }
     }
