@@ -1,14 +1,22 @@
 package com.orbis.samplematerialsearchview;
 
-import com.orbis.materialsearchview.SearchEntity;
-
 /**
  * Created by Carlos Vargas on 6/24/17.
  */
 
-public class AlarmEntity extends SearchEntity{
+public class AlarmEntity {
+
+    private String message;
 
     public AlarmEntity(String message) {
-        super(message);
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

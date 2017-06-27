@@ -13,30 +13,25 @@ import java.util.List;
 
 /**
  * Created by Carlos Vargas on 6/24/17.
+ *
  */
 
-public class NewSearchAdapter extends SearchAdapter {
-    @Override
-    public RecyclerView.ViewHolder getCount() {
-        return null;
-    }
+class NewSearchAdapter extends SearchAdapter<RecyclerView.ViewHolder> {
 
-
-   /* private static final int TYPE_ALARM = 0;
+    private static final int TYPE_ALARM = 0;
     private static final int TYPE_PROFILE = 1;
 
     private List<Object> objectList;
 
-    public NewSearchAdapter() {
+    NewSearchAdapter() {
     }
 
-    @Override
-    public void addDataList(List<Object> objectList) {
+    void addDataList(List<Object> objectList) {
         this.objectList = objectList;
     }
 
     @Override
-    public int getItemViewType(int position) {
+    public int getViewType(int position) {
         if (objectList.get(position) instanceof AlarmEntity) {
             return TYPE_ALARM;
         } else {
@@ -45,37 +40,38 @@ public class NewSearchAdapter extends SearchAdapter {
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateView(ViewGroup parent, int viewType) {
         View view;
         if (viewType == TYPE_ALARM) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search_1, parent, false);
-            return new ItemViewHolder1(view);
+            return new AlarmViewHolder(view);
         } else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search_2, parent, false);
-            return new ItemViewHolder2(view);
+            return new ProfileViewHolder(view);
         }
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder.getItemViewType() == TYPE_ALARM) {
-            ((ItemViewHolder1) holder).lblMessage.setText("HOLA1");
-
+    public void onBindView(RecyclerView.ViewHolder holder, int position) {
+        if (objectList.get(position) instanceof AlarmEntity) {
+            AlarmEntity alarmEntity = ((AlarmEntity) objectList.get(position));
+            ((AlarmViewHolder)holder).lblMessage.setText(alarmEntity.getMessage());
         } else {
-            ((ItemViewHolder2) holder).lblMessage.setText("HOLA2");
+            ProfileEntity profileEntity = ((ProfileEntity) objectList.get(position));
+            ((ProfileViewHolder)holder).lblMessage.setText(profileEntity.getMessage());
         }
     }
 
     @Override
-    public int getItemCount() {
+    public int getCount() {
         return objectList.size();
     }
 
-    class ItemViewHolder1 extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class AlarmViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private LinearLayout llGeneral;
         private TextView lblMessage;
 
-        ItemViewHolder1(View itemView) {
+        AlarmViewHolder(View itemView) {
             super(itemView);
             llGeneral = (LinearLayout) itemView.findViewById(com.orbis.materialsearchview.R.id.llGeneral);
             lblMessage = (TextView) itemView.findViewById(com.orbis.materialsearchview.R.id.lblMessage);
@@ -87,11 +83,11 @@ public class NewSearchAdapter extends SearchAdapter {
         }
     }
 
-    class ItemViewHolder2 extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class ProfileViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private LinearLayout llGeneral;
         private TextView lblMessage;
 
-        ItemViewHolder2(View itemView) {
+        ProfileViewHolder(View itemView) {
             super(itemView);
             llGeneral = (LinearLayout) itemView.findViewById(com.orbis.materialsearchview.R.id.llGeneral);
             lblMessage = (TextView) itemView.findViewById(com.orbis.materialsearchview.R.id.lblMessage);
@@ -101,5 +97,5 @@ public class NewSearchAdapter extends SearchAdapter {
         @Override
         public void onClick(View v) {
         }
-    }*/
+    }
 }

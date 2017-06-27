@@ -11,8 +11,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.orbis.materialsearchview.MaterialSearchView;
-import com.orbis.materialsearchview.SearchAdapter;
-import com.orbis.materialsearchview.SearchEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +23,6 @@ public class MainActivity extends AppCompatActivity {
     NewSearchAdapter newSearchAdapter;
 
     private List<Object> objectList = new ArrayList<>();
-
-    private boolean hola = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         newSearchAdapter = new NewSearchAdapter();
+
+        newSearchAdapter.addDataList(objectList);
 
         materialSearchView.initFirstSetup(objectList, newSearchAdapter);
     }

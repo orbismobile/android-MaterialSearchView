@@ -5,8 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/SampleMaterialSearchView.iml" filepath="$PROJECT_DIR$/SampleMaterialSearchView.iml" />
       <module fileurl="file://$PROJECT_DIR$/android-MaterialSearchView.iml" filepath="$PROJECT_DIR$/android-MaterialSearchView.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/materialsearchview/materialsearchview.iml" filepath="$PROJECT_DIR$/materialsearchview/materialsearchview.iml" />
       <module fileurl="file://$PROJECT_DIR$/materialsearchview/materialsearchview.iml" filepath="$PROJECT_DIR$/materialsearchview/materialsearchview.iml" />
     </modules>
   </component>

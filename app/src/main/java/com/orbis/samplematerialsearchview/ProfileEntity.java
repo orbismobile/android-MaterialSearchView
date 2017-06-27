@@ -1,15 +1,23 @@
 package com.orbis.samplematerialsearchview;
 
-import com.orbis.materialsearchview.SearchEntity;
 
 /**
  * Created by Carlos Vargas on 6/24/17.
  */
 
-public class ProfileEntity extends SearchEntity{
+public class ProfileEntity {
+
+    private String message;
 
     public ProfileEntity(String message) {
-        super(message);
+        this.message = message;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }
