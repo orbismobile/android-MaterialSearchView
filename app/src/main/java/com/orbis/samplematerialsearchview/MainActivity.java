@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     MaterialSearchView materialSearchView;
     Button btnClick;
     Toolbar toolbar;
-    NewSearchAdapter newSearchAdapter;
+    CustomAdapter customAdapter;
 
     private List<Object> objectList = new ArrayList<>();
 
@@ -40,11 +40,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        newSearchAdapter = new NewSearchAdapter();
+        customAdapter = new CustomAdapter();
 
-        newSearchAdapter.addDataList(objectList);
+        customAdapter.addDataList(objectList);
 
-        materialSearchView.initFirstSetup(objectList, newSearchAdapter);
+        materialSearchView.initFirstSetup(objectList, customAdapter);
     }
 
     @Override
