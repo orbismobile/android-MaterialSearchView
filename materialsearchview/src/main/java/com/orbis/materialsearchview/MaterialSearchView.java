@@ -10,7 +10,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -19,8 +18,6 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
 
 public class MaterialSearchView extends FrameLayout implements View.OnClickListener, SearchView.OnFocusChangeListener {
 
@@ -31,6 +28,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
     private View vShadow;
     private RecyclerView rcvSearch;
 
+    //Adapter
     public SearchAdapter searchAdapter;
 
     //Animator for reveal animation
@@ -38,9 +36,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
 
     //Animation for vShadow
     private Animation animationFadeInShadow;
-
     private Animation animationFadeInView;
-
 
     public MaterialSearchView(Context context) {
         this(context, null);
@@ -100,7 +96,6 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             circleReveal(1, false, true);
         } else {
-            // TODO all systems
             fadeInMaterialSearchView(true);
         }
     }
@@ -164,6 +159,8 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
                     vShadow.setVisibility(VISIBLE);
 
                     rcvSearch.setVisibility(VISIBLE);
+
+                    showInputMethod(svSearch.findFocus());
                 } else {
                     setVisibility(View.INVISIBLE);
 
@@ -184,7 +181,6 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         else
             setVisibility(INVISIBLE);
 
-
         rcvSearch.setVisibility(GONE);
 
         animationFadeInView.setAnimationListener(new Animation.AnimationListener() {
@@ -195,8 +191,6 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                Toast.makeText(getContext(), "notify1 " + searchAdapter.getList().size(), Toast.LENGTH_SHORT).show();
-                Toast.makeText(getContext(), "notify " + shouldShowSecondToolbar, Toast.LENGTH_SHORT).show();
                 if (shouldShowSecondToolbar) {
                     vShadow.setAnimation(animationFadeInShadow);
                     vShadow.setVisibility(VISIBLE);
@@ -217,21 +211,22 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        Log.e("FOCUSSS1","FOCUSSS " + svSearch.hasFocus());
-        Log.e("FOCUSSS2","FOCUSSS " + v.findFocus().hasFocus());
-
-        showInputMethod(v.findFocus(), hasFocus);
+        if (!hasFocus) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                circleReveal(1, false, false);
+            } else {
+                fadeInMaterialSearchView(false);
+            }
+        } else {
+            showInputMethod(v.findFocus());
+        }
     }
 
-    public void showInputMethod(View view, boolean hasFocus) {
-
-        //if (svSearch.hasWindowFocus() && svSearch.hasFocus()) {
-
+    public void showInputMethod(View view) {
+        if(svSearch.hasFocus()){
             InputMethodManager inputManager = (InputMethodManager) getContext()
                     .getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.showSoftInput(view, 0);
-
-        //}
+        }
     }
-
 }

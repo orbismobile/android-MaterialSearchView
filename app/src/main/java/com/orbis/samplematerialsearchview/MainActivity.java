@@ -1,6 +1,5 @@
 package com.orbis.samplematerialsearchview;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -26,6 +25,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     private List<Object> objectsListToHelper = new ArrayList<>();
     private List<Object> objectList1 = new ArrayList<>();
+
+    private String query = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,27 +78,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
             objectList1.clear();
-            objectList1.addAll(searchHelper.findAlarmhByName(""));
+            objectList1.addAll(searchHelper.findAlarmhByName(query));
             materialSearchView.setVisibleWithAnimation();
 
             return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        if (materialSearchView.getCurrentVisibility() == View.VISIBLE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                materialSearchView.circleReveal(1, false, false);
-            } else {
-                materialSearchView.fadeInMaterialSearchView(false);
-            }
-        } else {
-            super.onBackPressed();
-        }
     }
 
     @Override
@@ -107,8 +94,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        query = newText;
         objectList1.clear();
-        objectList1.addAll(searchHelper.findAlarmhByName(newText));
+        objectList1.addAll(searchHelper.findAlarmhByName(query));
         materialSearchView.searchAdapter.notifyDataSetChanged();
         return false;
     }
