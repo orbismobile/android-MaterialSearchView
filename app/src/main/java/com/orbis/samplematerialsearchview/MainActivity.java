@@ -3,6 +3,7 @@ package com.orbis.samplematerialsearchview;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
@@ -15,14 +16,16 @@ import com.orbis.materialsearchview.MaterialSearchView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     MaterialSearchView materialSearchView;
     Button btnClick;
     Toolbar toolbar;
     CustomAdapter customAdapter;
+    SearchHelper searchHelper;
 
-    private List<Object> objectList = new ArrayList<>();
+    private List<Object> objectsListToHelper = new ArrayList<>();
+    private List<Object> objectList1 = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +43,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        customAdapter = new CustomAdapter();
 
-        customAdapter.addDataList(objectList);
+        objectsListToHelper.add(new AlarmEntity("CarlitosDroid"));
+        objectsListToHelper.add(new AlarmEntity("Jan"));
+        objectsListToHelper.add(new AlarmEntity("Ricardo1"));
+        objectsListToHelper.add(new AlarmEntity("Ricardo2"));
+        objectsListToHelper.add(new AlarmEntity("Ricardo3"));
+        objectsListToHelper.add(new AlarmEntity("Ricardo4"));
 
-        materialSearchView.initFirstSetup(objectList, customAdapter);
+        searchHelper = new SearchHelper();
+        searchHelper.setAlarmEntities(objectsListToHelper);
+
+        customAdapter = new CustomAdapter(objectList1);
+        materialSearchView.initFirstSetup(customAdapter);
+        materialSearchView.svSearch.setOnQueryTextListener(this);
+
     }
 
     @Override
@@ -63,14 +76,10 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
-
-            objectList.add(new AlarmEntity("CarlitosDroid"));
-            objectList.add(new AlarmEntity("Jan"));
-            objectList.add(new AlarmEntity("Ricardo"));
-            objectList.add(new ProfileEntity("Andres"));
-            objectList.add(new ProfileEntity("Gerardo"));
-            objectList.add(new ProfileEntity("Carlo"));
+            objectList1.clear();
+            objectList1.addAll(searchHelper.findAlarmhByName(""));
             materialSearchView.setVisibleWithAnimation();
+
             return true;
         }
 
@@ -84,11 +93,23 @@ public class MainActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 materialSearchView.circleReveal(1, false, false);
             } else {
-                //setOnlyToolbarVisible();
+                materialSearchView.fadeInMaterialSearchView(false);
             }
         } else {
             super.onBackPressed();
         }
+    }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        objectList1.clear();
+        objectList1.addAll(searchHelper.findAlarmhByName(newText));
+        materialSearchView.searchAdapter.notifyDataSetChanged();
+        return false;
     }
 }

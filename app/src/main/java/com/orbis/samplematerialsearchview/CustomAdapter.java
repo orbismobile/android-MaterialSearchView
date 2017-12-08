@@ -13,7 +13,6 @@ import java.util.List;
 
 /**
  * Created by Carlos Vargas on 6/24/17.
- *
  */
 
 class CustomAdapter extends SearchAdapter<RecyclerView.ViewHolder> {
@@ -23,10 +22,7 @@ class CustomAdapter extends SearchAdapter<RecyclerView.ViewHolder> {
 
     private List<Object> objectList;
 
-    CustomAdapter() {
-    }
-
-    void addDataList(List<Object> objectList) {
+    CustomAdapter(List<Object> objectList) {
         this.objectList = objectList;
     }
 
@@ -55,16 +51,21 @@ class CustomAdapter extends SearchAdapter<RecyclerView.ViewHolder> {
     public void onBindView(RecyclerView.ViewHolder holder, int position) {
         if (objectList.get(position) instanceof AlarmEntity) {
             AlarmEntity alarmEntity = ((AlarmEntity) objectList.get(position));
-            ((AlarmViewHolder)holder).lblMessage.setText(alarmEntity.getMessage());
+            ((AlarmViewHolder) holder).lblMessage.setText(alarmEntity.getMessage());
         } else {
             ProfileEntity profileEntity = ((ProfileEntity) objectList.get(position));
-            ((ProfileViewHolder)holder).lblMessage.setText(profileEntity.getMessage());
+            ((ProfileViewHolder) holder).lblMessage.setText(profileEntity.getMessage());
         }
     }
 
     @Override
     public int getCount() {
         return objectList.size();
+    }
+
+    @Override
+    public List<Object> getList() {
+        return objectList;
     }
 
     private class AlarmViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

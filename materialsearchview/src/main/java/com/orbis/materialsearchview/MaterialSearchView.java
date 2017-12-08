@@ -7,37 +7,31 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.EditText;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
 
-public class MaterialSearchView extends FrameLayout implements View.OnClickListener {
+public class MaterialSearchView extends FrameLayout implements View.OnClickListener, SearchView.OnFocusChangeListener {
 
-    private EditText txtSearch;
-    private ImageButton btnBack;
-    private ImageButton btnClear;
-
-    private FrameLayout flGeneral;
+    //Views
+    public SearchView svSearch;
     private LinearLayout lnlSearch;
     private CardView cvSearch;
     private View vShadow;
-
     private RecyclerView rcvSearch;
-    private List<Object> objectList = new ArrayList<>();
-    private SearchAdapter searchAdapter;
+
+    public SearchAdapter searchAdapter;
 
     //Animator for reveal animation
     private Animator anim;
@@ -66,25 +60,27 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
     private void initView() {
         //set invisible when the widget is created
         setVisibility(INVISIBLE);
-
         View view = LayoutInflater.from(getContext()).inflate(R.layout.search_layout, this, true);
-
         cvSearch = (CardView) view.findViewById(R.id.cvSearch);
         lnlSearch = (LinearLayout) view.findViewById(R.id.lnlSearch);
         rcvSearch = (RecyclerView) view.findViewById(R.id.rcvSearch);
-        btnBack = (ImageButton) view.findViewById(R.id.btnBack);
-        txtSearch = (EditText) view.findViewById(R.id.txtSearch);
-        btnClear = (ImageButton) view.findViewById(R.id.btnClear);
+        svSearch = (SearchView) view.findViewById(R.id.svSearch);
         vShadow = view.findViewById(R.id.vShadow);
 
         vShadow.setOnClickListener(this);
         lnlSearch.setOnClickListener(this);
-        btnBack.setOnClickListener(this);
-        btnClear.setOnClickListener(this);
+
+        //Listener for SearchView
+        //svSearch.setOnQueryTextListener(this);
+        svSearch.setOnClickListener(this);
+        svSearch.setOnQueryTextFocusChangeListener(this);
+
+        //Setting up SearchView Properties
+        LinearLayout linearLayout = (LinearLayout) svSearch.findViewById(R.id.search_edit_frame);
+        ((LinearLayout.LayoutParams) linearLayout.getLayoutParams()).leftMargin = 0;
 
         //SetUp Animation for vShadow
         animationFadeInShadow = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in_shadow);
-
         animationFadeInView = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in_view);
     }
 
@@ -95,12 +91,8 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         a.recycle();
     }
 
-    public void initFirstSetup(List<Object> objects, SearchAdapter searchAdapter) {
-        this.objectList = objects;
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        rcvSearch.setLayoutManager(linearLayoutManager);
+    public void initFirstSetup(SearchAdapter searchAdapter) {
         this.searchAdapter = searchAdapter;
-        //this.searchAdapter.addDataList(objectList);
         rcvSearch.setAdapter(this.searchAdapter);
     }
 
@@ -115,9 +107,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.btnClear) {
-            Toast.makeText(getContext(), "AA", Toast.LENGTH_SHORT).show();
-        } else { //vShadow && btnBack
+        if (view.getId() == R.id.svSearch || view.getId() == R.id.vShadow) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 circleReveal(1, false, false);
             } else {
@@ -130,18 +120,12 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         return getVisibility();
     }
 
-
     //This method show or hide the secondToolbar with the Reveal Animation
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void circleReveal(int menuItemPositionFromRight, boolean containsOverflow, final boolean shouldShowSecondToolbar) {
 
         // make the view visible and start the animation
-        if (shouldShowSecondToolbar) {
-            setVisibility(View.VISIBLE);
-        } else {
-            objectList.clear();
-            searchAdapter.notifyDataSetChanged();
-        }
+        if (shouldShowSecondToolbar) setVisibility(View.VISIBLE);
 
         int width = lnlSearch.getWidth();
 
@@ -161,10 +145,13 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
             return;
         }
 
-        if (shouldShowSecondToolbar)
+        rcvSearch.setVisibility(GONE);
+
+        if (shouldShowSecondToolbar) {
             anim = ViewAnimationUtils.createCircularReveal(cvSearch, cx, cy, 0, (float) width);
-        else
+        } else {
             anim = ViewAnimationUtils.createCircularReveal(cvSearch, cx, cy, (float) width, 0);
+        }
 
         anim.setDuration((long) 220);
 
@@ -175,9 +162,11 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
                 if (shouldShowSecondToolbar) {
                     vShadow.setAnimation(animationFadeInShadow);
                     vShadow.setVisibility(VISIBLE);
-                    searchAdapter.notifyDataSetChanged();
+
+                    rcvSearch.setVisibility(VISIBLE);
                 } else {
                     setVisibility(View.INVISIBLE);
+
                 }
             }
         });
@@ -188,18 +177,15 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
     public void fadeInMaterialSearchView(final boolean shouldShowSecondToolbar) {
 
         // make the view visible and start the animation
-        if (shouldShowSecondToolbar) {
-            setVisibility(View.VISIBLE);
-        } else {
-            objectList.clear();
-            searchAdapter.notifyDataSetChanged();
-        }
-
+        if (shouldShowSecondToolbar) setVisibility(View.VISIBLE);
 
         if (shouldShowSecondToolbar)
             this.setAnimation(animationFadeInView);
         else
             setVisibility(INVISIBLE);
+
+
+        rcvSearch.setVisibility(GONE);
 
         animationFadeInView.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -209,12 +195,13 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
 
             @Override
             public void onAnimationEnd(Animation animation) {
+                Toast.makeText(getContext(), "notify1 " + searchAdapter.getList().size(), Toast.LENGTH_SHORT).show();
                 Toast.makeText(getContext(), "notify " + shouldShowSecondToolbar, Toast.LENGTH_SHORT).show();
                 if (shouldShowSecondToolbar) {
-
                     vShadow.setAnimation(animationFadeInShadow);
                     vShadow.setVisibility(VISIBLE);
-                    searchAdapter.notifyDataSetChanged();
+
+                    rcvSearch.setVisibility(VISIBLE);
                 } else {
                     setVisibility(View.INVISIBLE);
                 }
@@ -227,4 +214,24 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         });
         animationFadeInView.start();
     }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        Log.e("FOCUSSS1","FOCUSSS " + svSearch.hasFocus());
+        Log.e("FOCUSSS2","FOCUSSS " + v.findFocus().hasFocus());
+
+        showInputMethod(v.findFocus(), hasFocus);
+    }
+
+    public void showInputMethod(View view, boolean hasFocus) {
+
+        //if (svSearch.hasWindowFocus() && svSearch.hasFocus()) {
+
+            InputMethodManager inputManager = (InputMethodManager) getContext()
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.showSoftInput(view, 0);
+
+        //}
+    }
+
 }

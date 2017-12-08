@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/md_black_1000_50"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -38,31 +38,18 @@
                     android:background="@android:color/white"
                     android:orientation="horizontal">
 
-                    <ImageButton
-                        android:id="@+id/btnBack"
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:background="?attr/selectableItemBackground"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_arrow_back_grey_700_24dp" />
+                    <android.support.v7.widget.SearchView
+                        android:id="@+id/svSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        app:closeIcon="@drawable/ic_close_grey_700_24dp"
+                        app:iconifiedByDefault="false"
+                        app:queryBackground="@android:color/transparent"
+                        app:queryHint="Search"
+                        app:searchHintIcon="@null"
+                        app:searchIcon="@drawable/ic_arrow_back_grey_700_24dp" />
 
-                    <EditText
-                        android:id="@+id/txtSearch"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:hint="@string/default_search_message"
-                        android:textSize="16sp" />
-
-                    <ImageButton
-                        android:id="@+id/btnClear"
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:background="?attr/selectableItemBackground"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_close_grey_700_24dp"
-                        android:visibility="visible" />
                 </LinearLayout>
 
                 <View
@@ -74,7 +61,8 @@
                     android:id="@+id/rcvSearch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/md_white_1000" />
+                    android:background="@color/md_white_1000"
+                    app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
             </LinearLayout>
 

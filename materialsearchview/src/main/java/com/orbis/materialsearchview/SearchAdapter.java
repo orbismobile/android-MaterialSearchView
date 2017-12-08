@@ -3,6 +3,8 @@ package com.orbis.materialsearchview;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 /**
  * Created by Carlos Vargas on 6/24/17.
  *
@@ -38,5 +40,7 @@ public abstract class SearchAdapter<VH extends RecyclerView.ViewHolder> extends 
     public abstract int getViewType(int position);
 
     public abstract int getCount();
+
+    public abstract List<Object> getList();
 
 }
