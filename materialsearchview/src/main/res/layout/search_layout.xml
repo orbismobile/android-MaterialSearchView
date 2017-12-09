@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/flGeneral"
+    android:id="@+id/llGeneral"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -11,75 +11,48 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/md_black_1000_50"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 
-    <FrameLayout
+    <android.support.v7.widget.CardView
+        android:id="@+id/cvSearch"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="5dp">
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        app:cardBackgroundColor="@color/md_white_1000"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="2dp">
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/cvSearch"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/md_white_1000"
-            app:cardCornerRadius="2dp"
-            app:cardElevation="2dp">
+            android:orientation="vertical">
 
-            <LinearLayout
+            <android.support.v7.widget.SearchView
+                android:id="@+id/svSearch"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:gravity="center_vertical"
+                app:closeIcon="@drawable/ic_close_grey_700_24dp"
+                app:iconifiedByDefault="false"
+                app:queryBackground="@android:color/transparent"
+                app:queryHint="Search"
+                app:searchHintIcon="@null"
+                app:searchIcon="@drawable/ic_arrow_back_grey_700_24dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/md_grey_300" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rcvSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:background="@color/md_white_1000"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
-                <LinearLayout
-                    android:id="@+id/lnlSearch"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:background="@android:color/white"
-                    android:orientation="horizontal">
+        </LinearLayout>
 
-                    <ImageButton
-                        android:id="@+id/btnBack"
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:background="?attr/selectableItemBackground"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_arrow_back_grey_700_24dp" />
-
-                    <EditText
-                        android:id="@+id/txtSearch"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:hint="@string/default_search_message"
-                        android:textSize="16sp" />
-
-                    <ImageButton
-                        android:id="@+id/btnClear"
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:background="?attr/selectableItemBackground"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_close_grey_700_24dp"
-                        android:visibility="visible" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/md_grey_300" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rcvSearch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/md_white_1000" />
-
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
-
-    </FrameLayout>
+    </android.support.v7.widget.CardView>
 
 </FrameLayout>

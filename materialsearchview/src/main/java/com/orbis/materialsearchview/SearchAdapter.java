@@ -3,6 +3,8 @@ package com.orbis.materialsearchview;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 /**
  * Created by Carlos Vargas on 6/24/17.
  *

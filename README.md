@@ -10,6 +10,13 @@ any custom recyclerview in any activity.
 # SearchAdapter class
 For using `MaterialSearchView` widget , you must have to extend the `SearchAdapter` class for any adapter. 
 
+<p align="center">
+    <img src="Screenshots/Screenshot1.png" alt="icon" width="22%"/>
+    <img src="Screenshots/Screenshot2.png" alt="icon" width="22%"/>
+    <img src="Screenshots/Screenshot3.png" alt="icon" width="22%"/>
+</p>
+
+#![alt text](Screenshots/material_search_view.gif "Nice Material Search View Widget")
 
 # Main Properties
 
