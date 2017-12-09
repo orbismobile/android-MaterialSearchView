@@ -63,11 +63,6 @@ class CustomAdapter extends SearchAdapter<RecyclerView.ViewHolder> {
         return objectList.size();
     }
 
-    @Override
-    public List<Object> getList() {
-        return objectList;
-    }
-
     private class AlarmViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private LinearLayout llGeneral;
         private TextView lblMessage;

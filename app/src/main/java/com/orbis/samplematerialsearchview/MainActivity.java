@@ -1,6 +1,5 @@
 package com.orbis.samplematerialsearchview;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -79,8 +78,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         if (id == R.id.action_search) {
             objectList1.clear();
             objectList1.addAll(searchHelper.findAlarmhByName(query));
-            materialSearchView.startRevealAnimation();
-
+            materialSearchView.startSearcherAnimation();
             return true;
         }
 
@@ -98,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         query = newText;
         objectList1.clear();
         objectList1.addAll(searchHelper.findAlarmhByName(query));
-        materialSearchView.searchAdapter.notifyDataSetChanged();
+        customAdapter.notifyDataSetChanged();
         return false;
     }
 }

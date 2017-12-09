@@ -41,6 +41,4 @@ public abstract class SearchAdapter<VH extends RecyclerView.ViewHolder> extends 
 
     public abstract int getCount();
 
-    public abstract List<Object> getList();
-
 }

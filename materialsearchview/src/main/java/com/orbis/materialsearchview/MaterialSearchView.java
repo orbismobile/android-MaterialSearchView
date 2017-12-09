@@ -27,9 +27,6 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
     private View vShadow;
     private RecyclerView rcvSearch;
 
-    //Adapter
-    public SearchAdapter searchAdapter;
-
     //Animator for reveal animation
     private Animator anim;
 
@@ -82,12 +79,20 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         a.recycle();
     }
 
+    /**
+     * This method set up the recycler view with the adapter
+     *
+     * @param searchAdapter The adapter to manage the suggestions
+     */
     public void initFirstSetup(SearchAdapter searchAdapter) {
-        this.searchAdapter = searchAdapter;
-        rcvSearch.setAdapter(this.searchAdapter);
+        rcvSearch.setAdapter(searchAdapter);
     }
 
-    public void startRevealAnimation() {
+    /**
+     * This method start the animation of the searcher,
+     * Additionally support the animation for version higher 25
+     */
+    public void startSearcherAnimation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             circleReveal(1, false, true);
         } else {
@@ -106,12 +111,18 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         }
     }
 
-    //This method show or hide the secondToolbar with the Reveal Animation
+    /**
+     * This method show or hide the secondToolbar with the Reveal Animation
+     *
+     * @param menuItemPositionFromRight The position where the animation start
+     * @param containsOverflow          A boolean value for subtract additional space in a toolbar
+     * @param showSearcher              A boolean value if should show or hide the searcher
+     */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void circleReveal(int menuItemPositionFromRight, boolean containsOverflow, final boolean shouldShowSecondToolbar) {
+    public void circleReveal(int menuItemPositionFromRight, boolean containsOverflow, final boolean showSearcher) {
 
         // make the view visible and start the animation
-        if (shouldShowSecondToolbar) setVisibility(View.VISIBLE);
+        if (showSearcher) setVisibility(View.VISIBLE);
 
         int width = svSearch.getWidth();
 
@@ -133,7 +144,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
 
         rcvSearch.setVisibility(GONE);
 
-        if (shouldShowSecondToolbar) {
+        if (showSearcher) {
             anim = ViewAnimationUtils.createCircularReveal(cvSearch, cx, cy, 0, (float) width);
         } else {
             anim = ViewAnimationUtils.createCircularReveal(cvSearch, cx, cy, (float) width, 0);
@@ -145,7 +156,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (shouldShowSecondToolbar) {
+                if (showSearcher) {
                     vShadow.setAnimation(animationFadeInShadow);
                     vShadow.setVisibility(VISIBLE);
 
@@ -161,11 +172,16 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         anim.start();
     }
 
-    public void fadeInMaterialSearchView(final boolean shouldShowSecondToolbar) {
+    /**
+     * This method show or hide the secondToolbar with the FadeIn o Out Animation
+     * Support lower than 21
+     * @param showSearcher A boolean value if should show or hide the searcher
+     */
+    public void fadeInMaterialSearchView(final boolean showSearcher) {
         // make the view visible and start the animation
-        if (shouldShowSecondToolbar) setVisibility(View.VISIBLE);
+        if (showSearcher) setVisibility(View.VISIBLE);
 
-        if (shouldShowSecondToolbar)
+        if (showSearcher)
             this.setAnimation(animationFadeInView);
         else
             setVisibility(INVISIBLE);
@@ -180,7 +196,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                if (shouldShowSecondToolbar) {
+                if (showSearcher) {
                     vShadow.setAnimation(animationFadeInShadow);
                     vShadow.setVisibility(VISIBLE);
 

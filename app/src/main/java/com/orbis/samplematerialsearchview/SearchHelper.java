@@ -3,9 +3,8 @@ package com.orbis.samplematerialsearchview;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
- * Created by carlosleonardocamilovargashuaman on 12/7/17.
+ * Created by Carlos Leonardo Camilo Vargas Huamán on 12/7/17.
  */
 
 public class SearchHelper {
