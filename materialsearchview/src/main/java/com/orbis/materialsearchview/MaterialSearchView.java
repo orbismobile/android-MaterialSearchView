@@ -23,7 +23,6 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
 
     //Views
     public SearchView svSearch;
-    private LinearLayout lnlSearch;
     private CardView cvSearch;
     private View vShadow;
     private RecyclerView rcvSearch;
@@ -58,16 +57,12 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         setVisibility(INVISIBLE);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.search_layout, this, true);
         cvSearch = (CardView) view.findViewById(R.id.cvSearch);
-        lnlSearch = (LinearLayout) view.findViewById(R.id.lnlSearch);
         rcvSearch = (RecyclerView) view.findViewById(R.id.rcvSearch);
         svSearch = (SearchView) view.findViewById(R.id.svSearch);
         vShadow = view.findViewById(R.id.vShadow);
 
-        vShadow.setOnClickListener(this);
-        lnlSearch.setOnClickListener(this);
-
         //Listener for SearchView
-        //svSearch.setOnQueryTextListener(this);
+        vShadow.setOnClickListener(this);
         svSearch.setOnClickListener(this);
         svSearch.setOnQueryTextFocusChangeListener(this);
 
@@ -92,7 +87,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         rcvSearch.setAdapter(this.searchAdapter);
     }
 
-    public void setVisibleWithAnimation() {
+    public void startRevealAnimation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             circleReveal(1, false, true);
         } else {
@@ -111,10 +106,6 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         }
     }
 
-    public int getCurrentVisibility() {
-        return getVisibility();
-    }
-
     //This method show or hide the secondToolbar with the Reveal Animation
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void circleReveal(int menuItemPositionFromRight, boolean containsOverflow, final boolean shouldShowSecondToolbar) {
@@ -122,7 +113,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         // make the view visible and start the animation
         if (shouldShowSecondToolbar) setVisibility(View.VISIBLE);
 
-        int width = lnlSearch.getWidth();
+        int width = svSearch.getWidth();
 
         // getDimensionPixelOffset() in my case 48dp returns 96 pixels
         if (menuItemPositionFromRight > 0)
@@ -134,7 +125,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
             width -= getResources().getDimensionPixelSize(R.dimen.action_button_min_width_overflow_material);
 
         int cx = width;
-        int cy = lnlSearch.getHeight() / 2;
+        int cy = svSearch.getHeight() / 2;
 
         if (anim != null && anim.isRunning()) {
             return;
@@ -170,9 +161,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         anim.start();
     }
 
-
     public void fadeInMaterialSearchView(final boolean shouldShowSecondToolbar) {
-
         // make the view visible and start the animation
         if (shouldShowSecondToolbar) setVisibility(View.VISIBLE);
 
@@ -223,7 +212,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
     }
 
     public void showInputMethod(View view) {
-        if(svSearch.hasFocus()){
+        if (svSearch.hasFocus()) {
             InputMethodManager inputManager = (InputMethodManager) getContext()
                     .getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.showSoftInput(view, 0);

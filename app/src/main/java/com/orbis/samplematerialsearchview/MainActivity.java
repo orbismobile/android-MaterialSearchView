@@ -1,5 +1,6 @@
 package com.orbis.samplematerialsearchview;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -44,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
         });
 
-
         objectsListToHelper.add(new AlarmEntity("CarlitosDroid"));
         objectsListToHelper.add(new AlarmEntity("Jan"));
         objectsListToHelper.add(new AlarmEntity("Ricardo1"));
@@ -79,13 +79,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         if (id == R.id.action_search) {
             objectList1.clear();
             objectList1.addAll(searchHelper.findAlarmhByName(query));
-            materialSearchView.setVisibleWithAnimation();
+            materialSearchView.startRevealAnimation();
 
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     public boolean onQueryTextSubmit(String query) {
