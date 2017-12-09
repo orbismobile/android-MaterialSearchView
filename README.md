@@ -18,5 +18,7 @@ For using `MaterialSearchView` widget , you must have to extend the `SearchAdapt
 
 #![alt text](Screenshots/material_search_view.gif "Nice Material Search View Widget")
 
-# Main Properties
 
+# Help me
+Pull requests are more than welcome, help me and others improve this awesome library.
+The code is based in the Google Play Store application concept.
