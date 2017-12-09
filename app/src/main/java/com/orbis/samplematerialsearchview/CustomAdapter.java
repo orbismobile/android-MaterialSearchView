@@ -1,11 +1,13 @@
 package com.orbis.samplematerialsearchview;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.orbis.materialsearchview.SearchAdapter;
 
@@ -24,6 +26,16 @@ class CustomAdapter extends SearchAdapter<RecyclerView.ViewHolder> {
 
     CustomAdapter(List<Object> objectList) {
         this.objectList = objectList;
+    }
+
+    private OnSuggestionClickListener onSuggestionClickListener;
+
+    public interface OnSuggestionClickListener {
+        void onSuggestionClick(String message);
+    }
+
+    public void setOnSuggestionClickListener(OnSuggestionClickListener onSuggestionClickListener) {
+        this.onSuggestionClickListener = onSuggestionClickListener;
     }
 
     @Override
@@ -69,13 +81,14 @@ class CustomAdapter extends SearchAdapter<RecyclerView.ViewHolder> {
 
         AlarmViewHolder(View itemView) {
             super(itemView);
-            llGeneral = (LinearLayout) itemView.findViewById(com.orbis.materialsearchview.R.id.llGeneral);
-            lblMessage = (TextView) itemView.findViewById(com.orbis.materialsearchview.R.id.lblMessage);
+            llGeneral = itemView.findViewById(com.orbis.materialsearchview.R.id.llGeneral);
+            lblMessage = itemView.findViewById(com.orbis.materialsearchview.R.id.lblMessage);
             llGeneral.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
+            onSuggestionClickListener.onSuggestionClick(((AlarmEntity) objectList.get(getAdapterPosition())).getMessage());
         }
     }
 
@@ -85,9 +98,10 @@ class CustomAdapter extends SearchAdapter<RecyclerView.ViewHolder> {
 
         ProfileViewHolder(View itemView) {
             super(itemView);
-            llGeneral = (LinearLayout) itemView.findViewById(com.orbis.materialsearchview.R.id.llGeneral);
-            lblMessage = (TextView) itemView.findViewById(com.orbis.materialsearchview.R.id.lblMessage);
+            llGeneral = itemView.findViewById(com.orbis.materialsearchview.R.id.llGeneral);
+            lblMessage = itemView.findViewById(com.orbis.materialsearchview.R.id.lblMessage);
             llGeneral.setOnClickListener(this);
+            lblMessage.setOnClickListener(this);
         }
 
         @Override

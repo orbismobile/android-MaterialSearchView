@@ -53,9 +53,9 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         //set invisible when the widget is created
         setVisibility(INVISIBLE);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.search_layout, this, true);
-        cvSearch = (CardView) view.findViewById(R.id.cvSearch);
-        rcvSearch = (RecyclerView) view.findViewById(R.id.rcvSearch);
-        svSearch = (SearchView) view.findViewById(R.id.svSearch);
+        cvSearch = view.findViewById(R.id.cvSearch);
+        rcvSearch = view.findViewById(R.id.rcvSearch);
+        svSearch = view.findViewById(R.id.svSearch);
         vShadow = view.findViewById(R.id.vShadow);
 
         //Listener for SearchView
@@ -64,12 +64,13 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         svSearch.setOnQueryTextFocusChangeListener(this);
 
         //Setting up SearchView Properties
-        LinearLayout linearLayout = (LinearLayout) svSearch.findViewById(R.id.search_edit_frame);
+        LinearLayout linearLayout = svSearch.findViewById(R.id.search_edit_frame);
         ((LinearLayout.LayoutParams) linearLayout.getLayoutParams()).leftMargin = 0;
 
         //SetUp Animation for vShadow
         animationFadeInShadow = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in_shadow);
         animationFadeInView = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in_view);
+
     }
 
     private void initStyle(AttributeSet attrs, int defStyleAttr, int defStyleRes) {

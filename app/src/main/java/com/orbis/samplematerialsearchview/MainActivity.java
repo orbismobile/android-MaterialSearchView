@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,11 +12,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.orbis.materialsearchview.MaterialSearchView;
+import com.orbis.materialsearchview.SearchAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener,
+        CustomAdapter.OnSuggestionClickListener{
 
     MaterialSearchView materialSearchView;
     Button btnClick;
@@ -32,11 +35,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        materialSearchView = (MaterialSearchView) findViewById(R.id.sv);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        materialSearchView = findViewById(R.id.sv);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        btnClick = (Button) findViewById(R.id.btnClick);
+        btnClick = findViewById(R.id.btnClick);
         btnClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,11 +48,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         });
 
         objectsListToHelper.add(new AlarmEntity("CarlitosDroid"));
-        objectsListToHelper.add(new AlarmEntity("Jan"));
-        objectsListToHelper.add(new AlarmEntity("Ricardo1"));
-        objectsListToHelper.add(new AlarmEntity("Ricardo2"));
-        objectsListToHelper.add(new AlarmEntity("Ricardo3"));
-        objectsListToHelper.add(new AlarmEntity("Ricardo4"));
+        objectsListToHelper.add(new AlarmEntity("Nodejs"));
+        objectsListToHelper.add(new AlarmEntity("Android"));
+        objectsListToHelper.add(new AlarmEntity("Kotlin"));
+        objectsListToHelper.add(new AlarmEntity("Docker"));
+        objectsListToHelper.add(new AlarmEntity("Oreo"));
 
         searchHelper = new SearchHelper();
         searchHelper.setAlarmEntities(objectsListToHelper);
@@ -57,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         customAdapter = new CustomAdapter(objectList1);
         materialSearchView.initFirstSetup(customAdapter);
         materialSearchView.svSearch.setOnQueryTextListener(this);
+
+        customAdapter.setOnSuggestionClickListener(this);
 
     }
 
@@ -85,9 +90,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     public boolean onQueryTextSubmit(String query) {
+        Toast.makeText(this, query, Toast.LENGTH_SHORT).show();
+        materialSearchView.setVisibility(View.INVISIBLE);
         return false;
     }
 
@@ -98,5 +104,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         objectList1.addAll(searchHelper.findAlarmhByName(query));
         customAdapter.notifyDataSetChanged();
         return false;
+    }
+
+    @Override
+    public void onSuggestionClick(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        materialSearchView.setVisibility(View.INVISIBLE);
     }
 }
