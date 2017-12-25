@@ -9,20 +9,31 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public class MaterialSearchView extends FrameLayout implements View.OnClickListener, SearchView.OnFocusChangeListener {
+public class MaterialSearchView extends FrameLayout implements View.OnClickListener {
 
     //Views
-    public SearchView svSearch;
+    private LinearLayout lnlSearch;
+    private EditText etSearch;
+    private ImageButton btnBack;
+    private ImageButton btnClear;
+
     private CardView cvSearch;
     private View vShadow;
     private RecyclerView rcvSearch;
@@ -33,6 +44,13 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
     //Animation for vShadow
     private Animation animationFadeInShadow;
     private Animation animationFadeInView;
+
+    //LIstener
+    private OnQueryTextListener mOnQueryChangeListener;
+
+
+
+
 
     public MaterialSearchView(Context context) {
         this(context, null);
@@ -55,21 +73,26 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         View view = LayoutInflater.from(getContext()).inflate(R.layout.search_layout, this, true);
         cvSearch = view.findViewById(R.id.cvSearch);
         rcvSearch = view.findViewById(R.id.rcvSearch);
-        svSearch = view.findViewById(R.id.svSearch);
+
+        lnlSearch = (LinearLayout) view.findViewById(R.id.lnlSearch);
+        btnBack = (ImageButton) view.findViewById(R.id.btnBack);
+        etSearch = (EditText) view.findViewById(R.id.etSearch);
+        btnClear = (ImageButton) view.findViewById(R.id.btnClear);
+
         vShadow = view.findViewById(R.id.vShadow);
 
         //Listener for SearchView
         vShadow.setOnClickListener(this);
-        svSearch.setOnClickListener(this);
-        svSearch.setOnQueryTextFocusChangeListener(this);
-
-        //Setting up SearchView Properties
-        LinearLayout linearLayout = svSearch.findViewById(R.id.search_edit_frame);
-        ((LinearLayout.LayoutParams) linearLayout.getLayoutParams()).leftMargin = 0;
+        lnlSearch.setOnClickListener(this);
+        btnBack.setOnClickListener(this);
+        btnClear.setOnClickListener(this);
 
         //SetUp Animation for vShadow
         animationFadeInShadow = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in_shadow);
         animationFadeInView = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in_view);
+
+
+        etSearch.setOnEditorActionListener(mOnEditorActionListener);
 
     }
 
@@ -78,7 +101,97 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
                 attrs, R.styleable.MaterialSearchView, defStyleAttr, defStyleRes);
 
         a.recycle();
+
+
     }
+
+
+
+
+
+
+
+    private final TextView.OnEditorActionListener mOnEditorActionListener = new TextView.OnEditorActionListener() {
+
+        /**
+         * Called when the input method default action key is pressed.
+         */
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            onSubmitQuery();
+            return true;
+        }
+    };
+
+
+    void onSubmitQuery() {
+        CharSequence query = etSearch.getText();
+        if (query != null && TextUtils.getTrimmedLength(query) > 0) {
+            if (mOnQueryChangeListener == null
+                    || !mOnQueryChangeListener.onQueryTextSubmit(query.toString())) {
+                //TODO
+            }
+        }
+    }
+
+
+
+
+
+
+    /**
+     * Callbacks for changes to the query text.
+     */
+    public interface OnQueryTextListener {
+
+        /**
+         * Called when the user submits the query. This could be due to a key press on the
+         * keyboard or due to pressing a submit button.
+         * The listener can override the standard behavior by returning true
+         * to indicate that it has handled the submit request. Otherwise return false to
+         * let the SearchView handle the submission by launching any associated intent.
+         *
+         * @param query the query text that is to be submitted
+         * @return true if the query has been handled by the listener, false to let the
+         * SearchView perform the default action.
+         */
+        boolean onQueryTextSubmit(String query);
+
+        /**
+         * Called when the query text is changed by the user.
+         *
+         * @param newText the new content of the query text field.
+         * @return false if the SearchView should perform the default action of showing any
+         * suggestions if available, true if the action was handled by the listener.
+         */
+        boolean onQueryTextChange(String newText);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * This method set up the recycler view with the adapter
@@ -103,7 +216,9 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.svSearch || view.getId() == R.id.vShadow) {
+        if (view.getId() == R.id.btnClear) {
+            Toast.makeText(getContext(), "AA", Toast.LENGTH_SHORT).show();
+        } else { //vShadow && btnBack
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 circleReveal(1, false, false);
             } else {
@@ -125,7 +240,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         // make the view visible and start the animation
         if (showSearcher) setVisibility(View.VISIBLE);
 
-        int width = svSearch.getWidth();
+        int width = lnlSearch.getWidth();
 
         // getDimensionPixelOffset() in my case 48dp returns 96 pixels
         if (menuItemPositionFromRight > 0)
@@ -137,7 +252,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
             width -= getResources().getDimensionPixelSize(R.dimen.action_button_min_width_overflow_material);
 
         int cx = width;
-        int cy = svSearch.getHeight() / 2;
+        int cy = lnlSearch.getHeight() / 2;
 
         if (anim != null && anim.isRunning()) {
             return;
@@ -163,7 +278,6 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
 
                     rcvSearch.setVisibility(VISIBLE);
 
-                    showInputMethod(svSearch.findFocus());
                 } else {
                     setVisibility(View.INVISIBLE);
 
@@ -176,6 +290,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
     /**
      * This method show or hide the secondToolbar with the FadeIn o Out Animation
      * Support lower than 21
+     *
      * @param showSearcher A boolean value if should show or hide the searcher
      */
     public void fadeInMaterialSearchView(final boolean showSearcher) {
@@ -215,24 +330,4 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         animationFadeInView.start();
     }
 
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-        if (!hasFocus) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                circleReveal(1, false, false);
-            } else {
-                fadeInMaterialSearchView(false);
-            }
-        } else {
-            showInputMethod(v.findFocus());
-        }
-    }
-
-    public void showInputMethod(View view) {
-        if (svSearch.hasFocus()) {
-            InputMethodManager inputManager = (InputMethodManager) getContext()
-                    .getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.showSoftInput(view, 0);
-        }
-    }
 }

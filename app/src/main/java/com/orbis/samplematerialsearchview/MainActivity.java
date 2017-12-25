@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         customAdapter = new CustomAdapter(objectList1);
         materialSearchView.initFirstSetup(customAdapter);
-        materialSearchView.svSearch.setOnQueryTextListener(this);
 
         customAdapter.setOnSuggestionClickListener(this);
 
