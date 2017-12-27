@@ -8,21 +8,32 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public class MaterialSearchView extends FrameLayout implements View.OnClickListener, SearchView.OnFocusChangeListener {
+public class MaterialSearchView extends FrameLayout implements View.OnClickListener {
 
-    //Views
-    public SearchView svSearch;
+    //Views that compose the widget
+    private LinearLayout lnlSearch;
+    private EditText etSearch;
+    private ImageButton ibClose;
+    private ImageButton ibVoice;
     private CardView cvSearch;
     private View vShadow;
     private RecyclerView rcvSearch;
@@ -33,6 +44,14 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
     //Animation for vShadow
     private Animation animationFadeInShadow;
     private Animation animationFadeInView;
+
+    private boolean msvShowVoiceIcon;
+
+    //LIstener
+    private OnQueryTextListener onQueryTextListener;
+    private OnVoiceClickListener onVoiceClickListener;
+
+    private CharSequence mOldQueryText;
 
     public MaterialSearchView(Context context) {
         this(context, null);
@@ -55,29 +74,170 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         View view = LayoutInflater.from(getContext()).inflate(R.layout.search_layout, this, true);
         cvSearch = view.findViewById(R.id.cvSearch);
         rcvSearch = view.findViewById(R.id.rcvSearch);
-        svSearch = view.findViewById(R.id.svSearch);
+
+        lnlSearch = view.findViewById(R.id.lnlSearch);
+        ImageButton btnBack = view.findViewById(R.id.btnBack);
+        etSearch = view.findViewById(R.id.etSearch);
+        ibClose = view.findViewById(R.id.ibClose);
+        ibVoice = view.findViewById(R.id.ibVoice);
+
         vShadow = view.findViewById(R.id.vShadow);
 
         //Listener for SearchView
         vShadow.setOnClickListener(this);
-        svSearch.setOnClickListener(this);
-        svSearch.setOnQueryTextFocusChangeListener(this);
-
-        //Setting up SearchView Properties
-        LinearLayout linearLayout = svSearch.findViewById(R.id.search_edit_frame);
-        ((LinearLayout.LayoutParams) linearLayout.getLayoutParams()).leftMargin = 0;
+        lnlSearch.setOnClickListener(this);
+        btnBack.setOnClickListener(this);
+        ibClose.setOnClickListener(this);
+        ibVoice.setOnClickListener(this);
 
         //SetUp Animation for vShadow
         animationFadeInShadow = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in_shadow);
         animationFadeInView = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in_view);
 
+
+        //Adding listeners for EditText
+        etSearch.setOnEditorActionListener(mOnEditorActionListener);
+        etSearch.addTextChangedListener(textWatcher);
     }
 
     private void initStyle(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         final TypedArray a = getContext().obtainStyledAttributes(
                 attrs, R.styleable.MaterialSearchView, defStyleAttr, defStyleRes);
 
+        msvShowVoiceIcon = a.getBoolean(R.styleable.MaterialSearchView_msvShowVoiceIcon, false);
+
         a.recycle();
+    }
+
+    private final TextView.OnEditorActionListener mOnEditorActionListener = new TextView.OnEditorActionListener() {
+
+        /**
+         * Called when the input method default action key is pressed.
+         */
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                onSubmitQuery();
+                return true;
+            }
+            return false;
+        }
+    };
+
+    /**
+     * This method is called when the user click on the keyboard search icon
+     */
+    private void onSubmitQuery() {
+        CharSequence query = etSearch.getText();
+        if (query != null && onQueryTextListener != null) {
+            onQueryTextListener.onQueryTextSubmit(query.toString());
+        }
+    }
+
+    /**
+     * Callbacks for changes to the query text.
+     */
+    public interface OnQueryTextListener {
+
+        /**
+         * Called when the user submits the query. This could be due to a key press on the
+         * keyboard or due to pressing a submit button.
+         * The listener can override the standard behavior by returning true
+         * to indicate that it has handled the submit request. Otherwise return false to
+         * let the SearchView handle the submission by launching any associated intent.
+         *
+         * @param query the query text that is to be submitted
+         * @return true if the query has been handled by the listener, false to let the
+         * SearchView perform the default action.
+         */
+        boolean onQueryTextSubmit(String query);
+
+        /**
+         * Called when the query text is changed by the user.
+         *
+         * @param newText the new content of the query text field.
+         * @return false if the SearchView should perform the default action of showing any
+         * suggestions if available, true if the action was handled by the listener.
+         */
+        boolean onQueryTextChange(String newText);
+    }
+
+    /**
+     * Callback for actions on voice icon.
+     */
+    public interface OnVoiceClickListener {
+        void onVoiceClick();
+    }
+
+    /**
+     * This watcher is pending when the user write some texts on the EditText.
+     */
+    private final TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            MaterialSearchView.this.onTextChanged(s);
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+        }
+    };
+
+
+    /**
+     * Sets a listener for user actions within the SearchView.
+     *
+     * @param listener the listener object that receives callbacks when the user performs
+     *                 actions in the SearchView such as clicking on buttons or typing a query.
+     */
+    public void setOnQueryTextListener(OnQueryTextListener listener) {
+        onQueryTextListener = listener;
+    }
+
+    /**
+     * Sets a listener for user actions with the voice icon.
+     *
+     * @param onVoiceClickListener the listener object that receives callbacks when the user performs
+     *                             actions in the SearchView such as clicking on buttons or typing a query.
+     */
+    public void setmOnVoiceClickListener(OnVoiceClickListener onVoiceClickListener) {
+        this.onVoiceClickListener = onVoiceClickListener;
+    }
+
+    private void onTextChanged(CharSequence newText) {
+        CharSequence text = etSearch.getText();
+
+        boolean hasText = !TextUtils.isEmpty(text);
+
+        updateVoiceButton(!hasText);
+        updateCloseButton(hasText);
+
+        if (onQueryTextListener != null && !TextUtils.equals(newText, mOldQueryText)) {
+            onQueryTextListener.onQueryTextChange(newText.toString());
+        }
+
+        mOldQueryText = newText.toString();
+    }
+
+    private void updateVoiceButton(boolean empty) {
+        int visibility = GONE;
+        if (msvShowVoiceIcon && empty) {
+            visibility = VISIBLE;
+        }
+        ibVoice.setVisibility(visibility);
+    }
+
+    private void updateCloseButton(boolean empty) {
+        int visibility = GONE;
+        if (empty) {
+            visibility = VISIBLE;
+        }
+        ibClose.setVisibility(visibility);
     }
 
     /**
@@ -103,12 +263,39 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.svSearch || view.getId() == R.id.vShadow) {
+        int viewId = view.getId();
+        if (viewId == R.id.ibClose) {
+            onCloseClicked();
+        } else if (viewId == R.id.ibVoice) {
+            onVoiceClicked();
+        } else { //vShadow && btnBack
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 circleReveal(1, false, false);
             } else {
                 fadeInMaterialSearchView(false);
             }
+        }
+    }
+
+    /**
+     * Method called when the user click on the voice icon.
+     */
+    private void onVoiceClicked() {
+        onVoiceClickListener.onVoiceClick();
+    }
+
+    /**
+     * Method called when the user click on the close icon.
+     */
+    private void onCloseClicked() {
+        etSearch.setText("");
+        etSearch.requestFocus();
+        //setImeVisibility(true);
+        if (msvShowVoiceIcon) {
+            ibClose.setVisibility(GONE);
+            ibVoice.setVisibility(VISIBLE);
+        } else {
+            ibClose.setVisibility(GONE);
         }
     }
 
@@ -120,12 +307,12 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
      * @param showSearcher              A boolean value if should show or hide the searcher
      */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void circleReveal(int menuItemPositionFromRight, boolean containsOverflow, final boolean showSearcher) {
+    private void circleReveal(int menuItemPositionFromRight, boolean containsOverflow, final boolean showSearcher) {
 
         // make the view visible and start the animation
         if (showSearcher) setVisibility(View.VISIBLE);
 
-        int width = svSearch.getWidth();
+        int width = lnlSearch.getWidth();
 
         // getDimensionPixelOffset() in my case 48dp returns 96 pixels
         if (menuItemPositionFromRight > 0)
@@ -137,7 +324,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
             width -= getResources().getDimensionPixelSize(R.dimen.action_button_min_width_overflow_material);
 
         int cx = width;
-        int cy = svSearch.getHeight() / 2;
+        int cy = lnlSearch.getHeight() / 2;
 
         if (anim != null && anim.isRunning()) {
             return;
@@ -163,10 +350,9 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
 
                     rcvSearch.setVisibility(VISIBLE);
 
-                    showInputMethod(svSearch.findFocus());
+                    onEditTextShowed();
                 } else {
                     setVisibility(View.INVISIBLE);
-
                 }
             }
         });
@@ -176,9 +362,11 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
     /**
      * This method show or hide the secondToolbar with the FadeIn o Out Animation
      * Support lower than 21
+     *
      * @param showSearcher A boolean value if should show or hide the searcher
      */
-    public void fadeInMaterialSearchView(final boolean showSearcher) {
+    private void fadeInMaterialSearchView(final boolean showSearcher) {
+        Toast.makeText(getContext(), "ver", Toast.LENGTH_SHORT).show();
         // make the view visible and start the animation
         if (showSearcher) setVisibility(View.VISIBLE);
 
@@ -202,6 +390,7 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
                     vShadow.setVisibility(VISIBLE);
 
                     rcvSearch.setVisibility(VISIBLE);
+                    onEditTextShowed();
                 } else {
                     setVisibility(View.INVISIBLE);
                 }
@@ -215,24 +404,67 @@ public class MaterialSearchView extends FrameLayout implements View.OnClickListe
         animationFadeInView.start();
     }
 
+    private void onEditTextShowed() {
+        etSearch.requestFocus();
+        setImeVisibility(true);
+    }
+
+    /**
+     * We override this method to be sure and show the soft keyboard if
+     * appropriate when the TextView has focus.
+     */
     @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-        if (!hasFocus) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                circleReveal(1, false, false);
-            } else {
-                fadeInMaterialSearchView(false);
-            }
-        } else {
-            showInputMethod(v.findFocus());
+    public void onWindowFocusChanged(boolean hasWindowFocus) {
+        super.onWindowFocusChanged(hasWindowFocus);
+
+        if (hasWindowFocus && etSearch.hasFocus() && getVisibility() == VISIBLE) {
         }
     }
 
-    public void showInputMethod(View view) {
-        if (svSearch.hasFocus()) {
-            InputMethodManager inputManager = (InputMethodManager) getContext()
-                    .getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.showSoftInput(view, 0);
+    @Override
+    public void clearFocus() {
+        super.clearFocus();
+        etSearch.clearFocus();
+        setImeVisibility(false);
+    }
+
+    /**
+     * This method help us to show or hide the keyboard.
+     *
+     * @param visible
+     */
+    private void setImeVisibility(final boolean visible) {
+        final InputMethodManager imm = (InputMethodManager)
+                getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        if (!visible) {
+            imm.hideSoftInputFromWindow(getWindowToken(), 0);
+            return;
         }
+
+        if (imm.isActive(etSearch)) {
+            imm.showSoftInput(etSearch, 0);
+            return;
+        }
+
+    }
+
+    /**
+     * This method is necessary when the user press back button and the keyboard is hidden by default
+     * In that moment we want to hide the animation, if we don't override this method by default the
+     * keyboard is hidden without any action.
+     *
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean dispatchKeyEventPreIme(KeyEvent event) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            circleReveal(1, false, false);
+        } else {
+            fadeInMaterialSearchView(false);
+        }
+        return super.dispatchKeyEventPreIme(event);
     }
 }
+

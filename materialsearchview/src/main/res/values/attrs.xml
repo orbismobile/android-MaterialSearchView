@@ -2,10 +2,11 @@
 <resources>
     <declare-styleable name="MaterialSearchView">
         <attr name="msvSearchBackground" format="reference" />
-        <attr name="msvHint" format="string"/>
-        <attr name="msvTextColor" format="color"/>
-        <attr name="msvTextColorHint" format="color"/>
+        <attr name="msvHint" format="string" />
+        <attr name="msvTextColor" format="color" />
+        <attr name="msvTextColorHint" format="color" />
         <attr name="msvIsContainEnabled" format="boolean" />
         <attr name="msvHideShadow" format="boolean" />
+        <attr name="msvShowVoiceIcon" format="boolean" />
     </declare-styleable>
 </resources>
