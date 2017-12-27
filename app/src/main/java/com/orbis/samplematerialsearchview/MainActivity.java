@@ -2,9 +2,7 @@ package com.orbis.samplematerialsearchview;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,22 +10,22 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.orbis.materialsearchview.MaterialSearchView;
-import com.orbis.materialsearchview.SearchAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener,
-        CustomAdapter.OnSuggestionClickListener{
+public class MainActivity extends AppCompatActivity implements MaterialSearchView.OnQueryTextListener,
+        MaterialSearchView.OnVoiceClickListener,
+        CustomAdapter.OnSuggestionClickListener {
 
-    MaterialSearchView materialSearchView;
-    Button btnClick;
-    Toolbar toolbar;
-    CustomAdapter customAdapter;
-    SearchHelper searchHelper;
+    private MaterialSearchView materialSearchView;
+    private Button btnClick;
+    private Toolbar toolbar;
+    private CustomAdapter customAdapter;
+    private SearchHelper searchHelper;
 
-    private List<Object> objectsListToHelper = new ArrayList<>();
-    private List<Object> objectList1 = new ArrayList<>();
+    private final List<Object> objectsListToHelper = new ArrayList<>();
+    private final List<Object> objectList1 = new ArrayList<>();
 
     private String query = "";
 
@@ -58,10 +56,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         searchHelper.setAlarmEntities(objectsListToHelper);
 
         customAdapter = new CustomAdapter(objectList1);
+
         materialSearchView.initFirstSetup(customAdapter);
 
         customAdapter.setOnSuggestionClickListener(this);
-
+        materialSearchView.setOnQueryTextListener(this);
+        materialSearchView.setmOnVoiceClickListener(this);
     }
 
     @Override
@@ -110,4 +110,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         materialSearchView.setVisibility(View.INVISIBLE);
     }
+
+    @Override
+    public void onVoiceClick() {
+        Toast.makeText(this, "VOICE CLICKED", Toast.LENGTH_SHORT).show();
+    }
+
 }
