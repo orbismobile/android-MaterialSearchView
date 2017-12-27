@@ -1,11 +1,15 @@
 <h1 align="center">MaterialSearchView Widget</h1>
 
 <p align="center">
+    <a target="_blank" href="https://jitpack.io/#orbismobile/android-MaterialSearchView"><img src="https://jitpack.io/v/orbismobile/android-MaterialSearchView.svg"></a>
+</p>
+
+<p align="center">
     <img src="Screenshots/ic_launcher_search-web.png" alt="icon" width="25%"/>
 </p>
 
 MaterialSearchView is a custom widget with a material style that allows you to make any search on 
-any custom recyclerview in any activity.
+any custom RecyclerView in any activity. This library was inspired on the Google Play application.
 
 # SearchAdapter class
 For using `MaterialSearchView` widget , you must have to extend the `SearchAdapter` class for any adapter. 
